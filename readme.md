@@ -5,7 +5,7 @@
 
 ## Run:
 
->  ./test ../src/db/uniprot_sprot.fasta2 30 3 10
+>  ./test test_data/example1.fasta 20 3 10
 
 
 ### Example1 (2 threads):
@@ -25,7 +25,7 @@
 >  Processing data for worker: 1 from: 0 to: 13293241 took 48.2817 seconds,  read 25324 samples
 ```
 
-### Example1 (10 threads):
+### Example2 (10 threads):
 
 ```
 >  ./test ../src/db/uniprot_sprot.fasta2 10 3 10
