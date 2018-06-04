@@ -21,7 +21,7 @@
 ### Example1 (2 threads):
 
 ```
->  $ ./test ../src/db/uniprot_sprot.fasta2 2 3 10
+>  $ ./test ../src/db/uniprot_sprot.fasta2 2 3 10 0
 >  Reading input file: ../src/db/uniprot_sprot.fasta2, size 0.0247606 GB
 >  Using 2 io threads
 >  Enqueuing reading file: worker=1/2
@@ -38,7 +38,7 @@
 ### Example2 (10 threads):
 
 ```
->  ./test ../src/db/uniprot_sprot.fasta2 10 3 10
+>  ./test ../src/db/uniprot_sprot.fasta2 10 3 10 0
 >  Reading input file: ../src/db/uniprot_sprot.fasta2, size 0.0247606 GB
 >  Using 10 io threads
 >  Enqueuing reading file: worker=1/10
