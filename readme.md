@@ -5,7 +5,7 @@
 
 ## Run:
 
-> ./test <input file path> <num threads> <K> <W> <hash type> <MOD>
+> ./test \<input_file_path\> \<num threads\> \<K\> \<W\> \<hash type\> \<MOD\>
 >
 > K - Kgram length
 >
