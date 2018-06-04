@@ -10,6 +10,7 @@
 
 ### Example1 (2 threads):
 
+```
 >  $ ./test ../src/db/uniprot_sprot.fasta2 2 3 10
 >  Reading input file: ../src/db/uniprot_sprot.fasta2, size 0.0247606 GB
 >  Using 2 io threads
@@ -22,10 +23,11 @@
 >  Stopping thread pool executor...
 >  Processing data for worker: 2 from: 13293241 to: 26586482 took 48.0993 seconds,  read 26299 samples
 >  Processing data for worker: 1 from: 0 to: 13293241 took 48.2817 seconds,  read 25324 samples
-
+```
 
 ### Example1 (10 threads):
 
+```
 >  ./test ../src/db/uniprot_sprot.fasta2 10 3 10
 >  Reading input file: ../src/db/uniprot_sprot.fasta2, size 0.0247606 GB
 >  Using 10 io threads
@@ -70,3 +72,4 @@
 >  Processing data for worker: 10 from: 23927832 to: 26586480 took 11.0448 seconds,  read 4657 samples
 >  Processing data for worker: 2 from: 2658648 to: 5317296 took 11.2619 seconds,  read 5030 samples
 >  Processing data for worker: 4 from: 7975944 to: 10634592 took 11.9189 seconds,  read 5088 samples
+```
