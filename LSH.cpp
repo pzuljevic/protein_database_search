@@ -6,12 +6,40 @@
 
 using namespace fer::zesoi::bioinfo;
 
+HashType LSH::intToHashType(int type) {
+  switch (type) {
+   case 0: 
+     std::cout << "'MD5' is being used for hashing" << std::endl;
+     return HashType::MD5;
+   case 1:
+     std::cout << "'PLAIN' is being used for hashing" << std::endl;
+     return HashType::PLAIN;
+   case 2:
+     std::cout << "'PLAIN_MOD' is being used for hashing" << std::endl;
+     return HashType::PLAIN_MOD;
+   default:
+     std::cout << "'MD5' is being used for hashing" << std::endl;
+     return HashType::MD5;
+  }
+};
+
 std::function<int64_t(const std::string&, int64_t, int64_t)> 
 LSH::getHashFunc(
     HashType hashType, 
     int MOD) {
   switch (hashType) {
     case HashType::MD5:
+      return [](const std::string& str, int64_t pos, int64_t L) {
+        return getKMerValueMD5(str, pos, L);
+      };
+    case HashType::PLAIN:
+      return [](const std::string& str, int64_t pos, int64_t L) {
+        return getKMerValuePlain(str, pos, L);
+      };
+    case HashType::PLAIN_MOD:
+      return [MOD](const std::string& str, int64_t pos, int64_t L) {
+        return getKMerValuePlainMOD(str, pos, L, MOD);
+      };
     default:
       return [](const std::string& str, int64_t pos, int64_t L) {
         return getKMerValueMD5(str, pos, L);
@@ -75,7 +103,7 @@ int64_t LSH::getKMerValuePlain(
   return val;
 }
 
-int64_t LSH::getKMerValueMOD(
+int64_t LSH::getKMerValuePlainMOD(
     const std::string& seq, int64_t offset, int64_t K, int64_t MOD) {
   return getKMerValuePlain(seq, offset, K) % MOD;
 }

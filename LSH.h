@@ -25,6 +25,8 @@ enum HashType {
 class LSH {
  public:
 
+  static HashType intToHashType(int type);
+
   static std::function<int64_t(const std::string&, int64_t, int64_t)> getHashFunc(
     HashType hashType = HashType::MD5, 
     int MOD = 0);
@@ -48,7 +50,7 @@ class LSH {
   static int64_t getKMerValuePlain(
     const std::string& seq, int64_t offset, int64_t K);
 
-  static int64_t getKMerValueMOD(
+  static int64_t getKMerValuePlainMOD(
     const std::string& seq, int64_t offset, int64_t K, int64_t MOD);
 
   static int64_t getKMerValueMD5(

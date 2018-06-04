@@ -28,13 +28,16 @@ int main(int argc, char** argv) {
   // Window size
   const auto W = atoi(argv[4]);
   // HashType
+  const auto hashTypeInt = atoi(argv[5]);
+  const auto hashType = LSH::intToHashType(hashTypeInt);
+  // MOD value
   // atoi(argv[5])
-  auto parseCb = [K, W](const FastaHeader& fh) {
+  auto parseCb = [K, W, hashType](const FastaHeader& fh) {
     const auto& features = LSH::getMinHash(
       fh.getData(),
       K, 
       W, 
-      HashType::MD5); 
+      hashType); 
     return FeaturizedSample(fh.getID(), "", features); 
   }; 
   auto fileReader = make_unique<MultithreadedFastaReader<FeaturizedSample>>(

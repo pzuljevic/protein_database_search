@@ -5,7 +5,13 @@
 
 ## Run:
 
->  ./test test_data/example1.fasta 20 3 10
+> ./test <input file path> <num threads> <K> <W> <hash type> <MOD>
+> K - Kgram length
+> W - sliding window size
+> hash type - 0 (MD5), 1 (protein alphabet as the number in base 24), 2 (same as previous, but with MOD applied)
+> MOD - used only for option 2 for hash type
+ 
+>  ./test test_data/example1.fasta 20 3 10 0
 
 
 ### Example1 (2 threads):
