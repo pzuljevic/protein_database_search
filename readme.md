@@ -1,11 +1,31 @@
-## Build:
+# Protein database search tool (PDBS)
 
->  g++ -std=c++11 -pthread *.cpp -o test
+## INSTALATION
 
+### LINUX
 
-## Run:
+#### BUILD
 
-> ./test \<input_file_path\> \<num threads\> \<K\> \<W\> \<hash type\> \<MOD\>
+To build PDBS run the following commands:
+
+    git clone https://github.com/pzuljevic/protein_database_search.git
+    cd protein_database_search/
+    make
+
+After running make, an executable named 'pdbs' will appear in the current directory.
+
+#### CLEAN-UP
+
+To clean up the tool run:
+
+  make clean
+  
+
+## EXAMPLES
+
+### Run:
+
+> ./pdbs \<input_file_path\> \<num threads\> \<K\> \<W\> \<hash type\> \<MOD\>
 >
 > K - Kgram length
 >
@@ -15,8 +35,7 @@
 >
 > MOD - used only for option 2 for hash type
  
->  ./test test_data/example1.fasta 20 3 10 0
-
+>  ./pdbs test_data/example1.fasta 20 3 10 0
 
 ### Example1 (2 threads):
 

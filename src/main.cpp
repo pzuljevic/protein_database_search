@@ -5,11 +5,11 @@
 #include <memory>
 #include <stdlib.h>
 #include <functional>
-#include "Utils.h"
-#include "FastaStructs.h"
-#include "MultithreadedFastaReader.h"
-#include "md5.h"
-#include "LSH.h"
+#include "utils/Utils.h"
+#include "fasta/FastaStructs.h"
+#include "fasta/MultithreadedFastaReader.h"
+#include "hash/md5.h"
+#include "hash/LSH.h"
 
 using namespace fer::zesoi::bioinfo;
 

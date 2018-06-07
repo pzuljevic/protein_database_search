@@ -8,9 +8,9 @@
 #include <future>
 #include <mutex>
 #include <fstream>
-#include "SimplePoolExecutor.h"
-#include "FastaStructs.h"
-#include "Utils.h"
+#include "../threading/SimplePoolExecutor.h"
+#include "../fasta/FastaStructs.h"
+#include "../utils/Utils.h"
 
 namespace fer {
 namespace zesoi {
