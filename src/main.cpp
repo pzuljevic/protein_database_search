@@ -32,6 +32,10 @@ int main(int argc, char** argv) {
   const auto hashType = LSH::intToHashType(hashTypeInt);
   // MOD value
   // atoi(argv[5])
+
+  // Thread pool
+  auto threadPool = std::make_shared<ThreadPool>(numThreads);
+  // Define how do we convert protein data to feature vector
   auto parseCb = [K, W, hashType](const FastaHeader& fh) {
     const auto& features = LSH::getMinHash(
       fh.getData(),
@@ -41,8 +45,8 @@ int main(int argc, char** argv) {
     return FeaturizedSample(fh.getID(), "", features); 
   }; 
 
-  // Thread pool
-  auto threadPool = std::make_shared<ThreadPool>(numThreads);
+  // **** Data processing pipeline **** 
+  // Kick in multithreaded file reader and vectorization
   auto fileReader = make_unique<MultithreadedFastaReader<FeaturizedSample>>(
     inFile, 
     threadPool,
@@ -50,6 +54,9 @@ int main(int argc, char** argv) {
     parseCb
   );
   auto futureResults = fileReader->read();
+  // Collect data from the threads
+//  for (const auto future : futureResults) {
+ // } 
 
   threadPool->stop();
  

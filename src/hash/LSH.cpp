@@ -52,20 +52,20 @@ std::vector<int64_t> LSH::getMinHash(
     int K, 
     int W,
     HashType hashType, 
-    int MOD) {
+    int MOD) { 
   std::set<int64_t> features;
-  auto hashEval = getHashFunc();
-  for (int64_t i = 0; i < (int64_t)(seq.size() - W); i += W) {
-    int64_t maxIndex = i;
-    int64_t maxValue = INT64_MIN;
-    for (int j = 0; j < W; ++j) {
+  auto hashEval = getHashFunc(hashType, MOD);
+  for (int64_t i = 0; i < (int64_t)seq.size(); i += W) {
+    int64_t minIndex = i;
+    int64_t minValue = INT64_MAX;
+    for (int j = 0; j < W && (i + j) < seq.size(); ++j) {
       const auto val = hashEval(seq, i+j, K);
-      if (val > maxValue) {
-        maxIndex = i + j;
-        maxValue = val;
+      if (val < minValue) {
+        minIndex = i + j;
+        minValue = val;
       }
     }
-    features.insert(maxValue);
+    features.insert(minValue);
   } 
   return std::vector<int64_t>(features.begin(), features.begin());
 }
@@ -77,18 +77,18 @@ std::vector<int64_t> LSH::getMaxHash(
     HashType hashType, 
     int MOD) {
   std::set<int64_t> features;
-  auto hashEval = getHashFunc();
-  for (int64_t i = 0; i < (int64_t)(seq.size() - W); i += W) {
-    int64_t minIndex = i;
-    int64_t minValue = INT64_MAX;
-    for (int j = 0; j < W; ++j) {
+  auto hashEval = getHashFunc(hashType, MOD);
+  for (int64_t i = 0; i < (int64_t)seq.size(); i += W) {
+    int64_t maxIndex = i;
+    int64_t maxValue = INT64_MIN;
+    for (int j = 0; j < W && (i + j) < seq.size(); ++j) {
       const auto val = hashEval(seq, i+j, K);
-      if (val < minValue) {
-        minIndex = i + j;
-        minValue = val;
+      if (val > maxValue) {
+        maxIndex = i + j;
+        maxValue = val;
       }
     }
-    features.insert(minValue);
+    features.insert(maxValue);
   } 
   return std::vector<int64_t>(features.begin(), features.begin());
 }
@@ -114,10 +114,8 @@ int64_t LSH::getKMerValueMD5(
 }
 
 int64_t LSH::md5ToInt(const char* fingerprint) {
-  int v1, v2, v3, v4;
-  sscanf(&fingerprint[0], "%x", &v1);
-  sscanf(&fingerprint[8], "%x", &v2);
-  sscanf(&fingerprint[16], "%x", &v3);
-  sscanf(&fingerprint[24], "%x", &v4);
-  return v1 ^ v2 ^ v3 ^v4;
+  size_t len = strlen(fingerprint);
+  size_t offset = len < 16 ? 0 : len-16;
+  unsigned long long hash_tail = strtoull(fingerprint + offset, NULL, 16);
+  return hash_tail % INT64_MAX;
 }
