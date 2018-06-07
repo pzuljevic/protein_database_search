@@ -17,11 +17,11 @@ int main(int argc, char** argv) {
   // Input file path
   const auto inFile = argv[1];
   // Thread pool size
-  const auto numIOThreads = atoi(argv[2]);
+  const auto numThreads = atoi(argv[2]);
   std::cout << "Reading input file: " << inFile
             << ", size " << Utils::getFileSizeGB(inFile) << " GB" 
             << std::endl;
-  std::cout << "Using " << numIOThreads << " io threads" << std::endl;
+  std::cout << "Using " << numThreads << " threads" << std::endl;
 
   // K-gram
   const auto K = atoi(argv[3]);
@@ -40,12 +40,18 @@ int main(int argc, char** argv) {
       hashType); 
     return FeaturizedSample(fh.getID(), "", features); 
   }; 
+
+  // Thread pool
+  auto threadPool = std::make_shared<ThreadPool>(numThreads);
   auto fileReader = make_unique<MultithreadedFastaReader<FeaturizedSample>>(
     inFile, 
-    numIOThreads, 
+    threadPool,
+    numThreads,
     parseCb
   );
   auto futureResults = fileReader->read();
+
+  threadPool->stop();
  
   return 0;
 }
