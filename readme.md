@@ -25,22 +25,26 @@ To clean up the build run:
 
 ### Run:
 
-> ./pdbs \<input_file_path\> \<num threads\> \<K\> \<W\> \<hash type\> \<MOD\>
->
-> K - Kgram length
->
-> W - sliding window size
->
-> hash type - 0 (MD5), 1 (protein alphabet as the number in base 24), 2 (same as previous, but with MOD applied)
->
-> MOD - used only for option 2 for hash type
- 
->  ./pdbs test_data/example1.fasta 20 3 10 0
+    ./pdbs \<input_file_path\> \<num threads\> \<K\> \<W\> \<hash type\> \<MOD\>
 
+    ./pdbs test_data/example1.fasta 20 3 10 0
+
+> Parameter description:
+> 
+>   K - Kgram length
+>
+>   W - sliding window size
+>
+>   hash type - 0 (MD5), 
+>               1 (protein alphabet as the number in base 24), 
+>               2 (same as previous, but with MOD applied)
+>
+>   MOD - used only for option 2 for hash type
+ 
 ### Example1 (2 threads):
 
 ```
->  $ ./test ../src/db/uniprot_sprot.fasta2 2 3 10 0
+>  $ ./pdbs ../src/db/uniprot_sprot.fasta2 2 3 10 0
 >  Reading input file: ../src/db/uniprot_sprot.fasta2, size 0.0247606 GB
 >  Using 2 io threads
 >  Enqueuing reading file: worker=1/2
@@ -57,7 +61,7 @@ To clean up the build run:
 ### Example2 (10 threads):
 
 ```
->  ./test ../src/db/uniprot_sprot.fasta2 10 3 10 0
+>  ./pdbs ../src/db/uniprot_sprot.fasta2 10 3 10 0
 >  Reading input file: ../src/db/uniprot_sprot.fasta2, size 0.0247606 GB
 >  Using 10 io threads
 >  Enqueuing reading file: worker=1/10
