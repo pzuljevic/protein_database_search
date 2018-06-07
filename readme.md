@@ -1,4 +1,4 @@
-# Protein database search tool (PDBS)
+# Protein database search tool (PDBS) - work still in progress
 
 ## INSTALATION
 
@@ -16,9 +16,9 @@ After running make, an executable named 'pdbs' will appear in the current direct
 
 #### CLEAN-UP
 
-To clean up the tool run:
+To clean up the build run:
 
-  make clean
+    make clean
   
 
 ## EXAMPLES
