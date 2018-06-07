@@ -27,19 +27,32 @@ To clean up the build run:
 
     ./pdbs \<input_file_path\> \<num threads\> \<K\> \<W\> \<hash type\> \<MOD\>
 
-    ./pdbs test_data/example1.fasta 20 3 10 0
 
-> Parameter description:
+#### Parameter description:
 > 
 >   K - Kgram length
 >
 >   W - sliding window size
 >
->   hash type - 0 (MD5), 
+>   hash type - 0 (MD5),
+>
 >               1 (protein alphabet as the number in base 24), 
+>
 >               2 (same as previous, but with MOD applied)
 >
 >   MOD - used only for option 2 for hash type
+
+#### Expected input file description:
+
+Input file must be in the FASTA form and follow the next format:
+
+    line-n:          <FASTA HEADER>
+    line-n+1 to n+k: <PROTEIN DATA>
+    E.g.:
+	>sp|Q6GZX3|002L_FRG3G Uncharacterized protein 002L OS=Frog virus 3 (isolate Goorha) GN=FV3-002L PE=4 SV=1
+	MSIIGATRLQNDKSDTYSAGPCYAGGCSAFTPRGTCGKDWDLGEQTCASGFCTSQPLCAR
+	IKKTQVCGLRYSSKGKDPLVSAEWDSRGAPYVRCTYDADLIDTQAQVDQFVSMFGESPSL
+
  
 ### Example1 (2 threads):
 
