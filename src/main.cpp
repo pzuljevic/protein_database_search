@@ -3,6 +3,7 @@
 #include <iostream>
 #include <future>
 #include <memory>
+#include <mutex>
 #include <stdlib.h>
 #include <functional>
 #include "utils/Utils.h"
@@ -10,6 +11,7 @@
 #include "fasta/MultithreadedFastaReader.h"
 #include "hash/md5.h"
 #include "hash/LSH.h"
+#include "structs/Structs.h"
 
 using namespace fer::zesoi::bioinfo;
 
@@ -42,23 +44,40 @@ int main(int argc, char** argv) {
       K, 
       W, 
       hashType); 
-    return FeaturizedSample(fh.getID(), "", features); 
+    return DataSample(
+      fh.getID(), 
+      "", // No data for now
+      features, 
+      fh.getData().size()
+    ); 
   }; 
 
   // **** Data processing pipeline **** 
   // Kick in multithreaded file reader and vectorization
-  auto fileReader = make_unique<MultithreadedFastaReader<FeaturizedSample>>(
+  auto fileReader = make_unique<MultithreadedFastaReader<DataSample>>(
     inFile, 
     threadPool,
     numThreads,
     parseCb
   );
   auto futureResults = fileReader->read();
-  // Collect data from the threads
-//  for (const auto future : futureResults) {
- // } 
 
+  // Collect data from the threads 
+  std::vector<DataSample> samples; 
+  std::mutex lck;
+  for (auto& future : *futureResults) {
+    threadPool->enqueue([&] {
+      const auto& result = future.get();
+      std::lock_guard<std::mutex> guard(lck); 
+      samples.insert(samples.end(), result.begin(), result.end()); 
+    });
+  } 
   threadPool->stop();
- 
+  std::cout << "Done loading " << samples.size() 
+            << " samples into memory" << std::endl;
+
+  // **** Clustering **** 
+  // Kick in clustering
+
   return 0;
 }

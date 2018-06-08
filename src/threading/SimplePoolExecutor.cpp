@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+using namespace fer::zesoi::bioinfo;
+
 ThreadPool::ThreadPool(size_t numThreads) : stopped_(false) {
   for (size_t i = 0; i < numThreads ;++i) {
     workers_.emplace_back([this] {

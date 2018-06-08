@@ -49,16 +49,16 @@ LSH::getHashFunc(
 
 std::vector<int64_t> LSH::getMinHash(
     const std::string& seq, 
-    int K, 
-    int W,
+    size_t K, 
+    size_t W,
     HashType hashType, 
     int MOD) { 
   std::set<int64_t> features;
   auto hashEval = getHashFunc(hashType, MOD);
-  for (int64_t i = 0; i < (int64_t)seq.size(); i += W) {
+  for (size_t i = 0; i < seq.size(); i += W) {
     int64_t minIndex = i;
     int64_t minValue = INT64_MAX;
-    for (int j = 0; j < W && (i + j) < seq.size(); ++j) {
+    for (size_t j = 0; j < W && (i + j) < seq.size(); ++j) {
       const auto val = hashEval(seq, i+j, K);
       if (val < minValue) {
         minIndex = i + j;
@@ -72,16 +72,16 @@ std::vector<int64_t> LSH::getMinHash(
 
 std::vector<int64_t> LSH::getMaxHash(
     const std::string& seq, 
-    int K, 
-    int W,
+    size_t K, 
+    size_t W,
     HashType hashType, 
     int MOD) {
   std::set<int64_t> features;
   auto hashEval = getHashFunc(hashType, MOD);
-  for (int64_t i = 0; i < (int64_t)seq.size(); i += W) {
+  for (size_t i = 0; i < seq.size(); i += W) {
     int64_t maxIndex = i;
     int64_t maxValue = INT64_MIN;
-    for (int j = 0; j < W && (i + j) < seq.size(); ++j) {
+    for (size_t j = 0; j < W && (i + j) < seq.size(); ++j) {
       const auto val = hashEval(seq, i+j, K);
       if (val > maxValue) {
         maxIndex = i + j;
@@ -94,22 +94,22 @@ std::vector<int64_t> LSH::getMaxHash(
 }
 
 int64_t LSH::getKMerValuePlain(
-    const std::string& seq, int64_t offset, int64_t K) {
+    const std::string& seq, size_t offset, size_t K) {
   int64_t val = 0;
-  for (int64_t i = offset; i < offset + K && i < seq.size(); ++i) {
+  for (size_t i = offset; i < offset + K && i < seq.size(); ++i) {
     val *= ALPHABET_SIZE;
-    val += (int)seq[i] - 'A' + 1; 
+    val += (int64_t)seq[i] - 'A' + 1; 
   }
   return val;
 }
 
 int64_t LSH::getKMerValuePlainMOD(
-    const std::string& seq, int64_t offset, int64_t K, int64_t MOD) {
+    const std::string& seq, size_t offset, size_t K, int64_t MOD) {
   return getKMerValuePlain(seq, offset, K) % MOD;
 }
 
 int64_t LSH::getKMerValueMD5(
-    const std::string& seq, int64_t offset, int64_t K) {
+    const std::string& seq, size_t offset, size_t K) {
   return md5ToInt(md5(seq.substr(offset, K)).c_str());
 }
 

@@ -39,7 +39,7 @@ double JaccardDistance::getDistance(
     const std::vector<int64_t>& seq2) const {
   int64_t l1 = seq1.size(), l2 = seq2.size();
   int64_t intersectionCnt = 0; 
-  for (int i = 0, j = 0; i < seq1.size() && i < seq2.size(); ) {
+  for (size_t i = 0, j = 0; i < seq1.size() && i < seq2.size(); ) {
     if (seq1[i] == seq2[j]) {
       intersectionCnt++;
       ++i; 
@@ -66,7 +66,7 @@ double EuclideanDistance::getDistance(
     const std::vector<int64_t>& seq1, 
     const std::vector<int64_t>& seq2) const {
   double dist = 0;
-  for (int i = 0; i < seq1.size(); ++i) {
+  for (size_t i = 0; i < seq1.size(); ++i) {
     const auto delta = std::abs(seq1[i] - seq2[i]);
     dist += delta * delta;
   }

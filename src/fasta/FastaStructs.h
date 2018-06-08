@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include "../structs/Structs.h"
 
 namespace fer {
 namespace zesoi {
@@ -27,29 +28,15 @@ class FastaHeader {
   std::string data_;
 };
 
-class FeaturizedSample {
- public:
-  FeaturizedSample(
-    int64_t id, 
-    const std::string& header, 
-    const std::vector<int64_t>& features) 
-    : id_(id), header_(header), features_(features) {}
-
- private:
-  int64_t id_;
-  std::string header_;
-  std::vector<int64_t> features_; 
-};
-
 class FastaParser {
  public:
   FastaParser() {}
 
-  std::vector<FeaturizedSample> parseFile(
+  std::vector<DataSample> parseFile(
     const char* filePath, 
-    uint64_t startSeek, 
-    uint64_t endSeek,
-    std::function<FeaturizedSample(const FastaHeader& fh)> parseCb
+    int64_t startSeek, 
+    int64_t endSeek,
+    std::function<DataSample(const FastaHeader& fh)> parseCb
   );
 
   double getProcessingTimeSec() const; 

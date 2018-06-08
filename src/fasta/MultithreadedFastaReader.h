@@ -35,25 +35,20 @@ class MultithreadedFastaReader {
 
   inline std::unique_ptr<std::vector<FutureParseResults>> read() {
     auto results = make_unique<std::vector<FutureParseResults>>();
-    uint64_t prevOffsetB = 0;
-    uint64_t nextOffsetB = 0;
-    uint64_t deltaOffsetB = Utils::getFileSizeB(inFile_) / numAllocatedThreads_; 
+    int64_t prevOffsetB = 0;
+    int64_t nextOffsetB = 0;
+    int64_t deltaOffsetB = Utils::getFileSizeB(inFile_) / numAllocatedThreads_; 
     // Schedule file read workers
-    for (int i = 0; i < numAllocatedThreads_; ++i) {
+    for (size_t i = 0; i < numAllocatedThreads_; ++i) {
       prevOffsetB = nextOffsetB;
       nextOffsetB += deltaOffsetB;
       std::cout << "Enqueuing reading file: worker=" << i + 1 
                 << "/" << numAllocatedThreads_ << std::endl 
-                << " start_seek_gigabytes=" << Utils::convertBtoGB(prevOffsetB)
-                << "\tend_seek_gigabytes=" << Utils::convertBtoGB(nextOffsetB)
-                << "\tdelta_seek_gigabytes=" << Utils::convertBtoGB(deltaOffsetB)
-                << std::endl
-                << " start_seek_bytes=" << prevOffsetB 
-                << "\tend_seek_bytes=" << nextOffsetB 
-                << "\tdelta_seek_bytes=" << deltaOffsetB
+                << "\tstart_seek_gigabytes=" << Utils::convertBtoGB(prevOffsetB)
+                << ", end_seek_gigabytes=" << Utils::convertBtoGB(nextOffsetB)
                 << std::endl;
       auto resultFuture = threadPool_->enqueue(
-        [this, i](uint64_t startSeek, uint64_t endSeek) { 
+        [this, i](int64_t startSeek, int64_t endSeek) { 
           auto fp = FastaParser();
           auto result = fp.parseFile(inFile_, startSeek, endSeek, parseCb_);
           {

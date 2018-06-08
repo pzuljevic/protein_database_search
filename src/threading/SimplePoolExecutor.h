@@ -12,6 +12,10 @@
 #include <functional>
 #include <stdexcept>
 
+namespace fer {
+namespace zesoi {
+namespace bioinfo {
+
 class ThreadPool {
  public:
   ThreadPool(size_t numThreads);
@@ -53,5 +57,9 @@ auto ThreadPool::enqueue(F&& f, Args&&... args)
   }
   condition_.notify_one();
   return res;
+}
+
+}
+}
 }
 #endif
