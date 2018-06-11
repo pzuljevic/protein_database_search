@@ -12,6 +12,10 @@ To build PDBS run the following commands:
     cd protein_database_search/
     make
 
+Example:
+
+    make && ./pdbs src/test_data/db/uniprot_sprot.fasta2 50 3 5 1 1 100 0.35 0.90
+
 After running make, an executable named 'pdbs' will appear in the current directory.
 
 #### CLEAN-UP
@@ -65,7 +69,7 @@ Input file must be in the FASTA form and follow the next format:
 ### Example1 (2 threads):
 
 ```
->  $ ./pdbs ../src/db/uniprot_sprot.fasta2 2 3 10 0
+>  $ ./pdbs ../src/db/uniprot_sprot.fasta2 2 3 10 0 0 200 0.4 0.9
 >  Reading input file: ../src/db/uniprot_sprot.fasta2, size 0.0247606 GB
 >  Using 2 io threads
 >  Enqueuing reading file: worker=1/2
@@ -82,7 +86,7 @@ Input file must be in the FASTA form and follow the next format:
 ### Example2 (10 threads):
 
 ```
->  ./pdbs ../src/db/uniprot_sprot.fasta2 10 3 10 0
+>  ./pdbs ../src/db/uniprot_sprot.fasta2 10 3 10 0 0 200 0.4 0.9
 >  Reading input file: ../src/db/uniprot_sprot.fasta2, size 0.0247606 GB
 >  Using 10 io threads
 >  Enqueuing reading file: worker=1/10
