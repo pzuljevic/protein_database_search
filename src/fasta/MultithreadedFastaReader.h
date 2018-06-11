@@ -1,5 +1,5 @@
-#ifndef MULTITHREADED_FILE_READER
-#define MULTITHREADED_FILE_READER
+#ifndef MULTITHREADED_FASTA_READER
+#define MULTITHREADED_FASTA_READER
 
 #include <string>
 #include <vector>

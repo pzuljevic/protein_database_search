@@ -30,13 +30,13 @@ const int64_t FastaHeader::getID() const {
   return id_;
 }
 
-std::vector<DataSample> FastaParser::parseFile(
+std::vector<DataSamplePtr> FastaParser::parseFile(
     const char* filePath, 
     int64_t startSeek, 
     int64_t endSeek,
-    std::function<DataSample(const FastaHeader& fh)> parseCb) {
+    std::function<DataSamplePtr(const FastaHeader& fh)> parseCb) {
   auto start = std::chrono::high_resolution_clock::now();
-  std::vector<DataSample> data;
+  std::vector<DataSamplePtr> data;
   std::ifstream input(filePath);
   if(!input.good()){
     std::cerr << "Error opening the file ..." << std::endl;

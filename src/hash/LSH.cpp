@@ -26,7 +26,7 @@ HashType LSH::intToHashType(int type) {
 std::function<int64_t(const std::string&, int64_t, int64_t)> 
 LSH::getHashFunc(
     HashType hashType, 
-    int MOD) {
+    int64_t MOD) {
   switch (hashType) {
     case HashType::MD5:
       return [](const std::string& str, int64_t pos, int64_t L) {
@@ -49,16 +49,16 @@ LSH::getHashFunc(
 
 std::vector<int64_t> LSH::getMinHash(
     const std::string& seq, 
-    size_t K, 
-    size_t W,
+    int64_t K, 
+    int64_t W,
     HashType hashType, 
-    int MOD) { 
+    int64_t MOD) { 
   std::set<int64_t> features;
   auto hashEval = getHashFunc(hashType, MOD);
-  for (size_t i = 0; i < seq.size(); i += W) {
+  for (int64_t i = 0; i < (int64_t)seq.size(); i += W) {
     int64_t minIndex = i;
     int64_t minValue = INT64_MAX;
-    for (size_t j = 0; j < W && (i + j) < seq.size(); ++j) {
+    for (int64_t j = 0; j < W && (i + j) < (int64_t)seq.size(); ++j) {
       const auto val = hashEval(seq, i+j, K);
       if (val < minValue) {
         minIndex = i + j;
@@ -67,21 +67,21 @@ std::vector<int64_t> LSH::getMinHash(
     }
     features.insert(minValue);
   } 
-  return std::vector<int64_t>(features.begin(), features.begin());
+  return std::vector<int64_t>(features.begin(), features.end());
 }
 
 std::vector<int64_t> LSH::getMaxHash(
     const std::string& seq, 
-    size_t K, 
-    size_t W,
+    int64_t K, 
+    int64_t W,
     HashType hashType, 
-    int MOD) {
+    int64_t MOD) {
   std::set<int64_t> features;
   auto hashEval = getHashFunc(hashType, MOD);
-  for (size_t i = 0; i < seq.size(); i += W) {
+  for (int64_t i = 0; i < (int64_t)seq.size(); i += W) {
     int64_t maxIndex = i;
     int64_t maxValue = INT64_MIN;
-    for (size_t j = 0; j < W && (i + j) < seq.size(); ++j) {
+    for (int64_t j = 0; j < W && (i + j) < (int64_t)seq.size(); ++j) {
       const auto val = hashEval(seq, i+j, K);
       if (val > maxValue) {
         maxIndex = i + j;
@@ -90,13 +90,13 @@ std::vector<int64_t> LSH::getMaxHash(
     }
     features.insert(maxValue);
   } 
-  return std::vector<int64_t>(features.begin(), features.begin());
+  return std::vector<int64_t>(features.begin(), features.end());
 }
 
 int64_t LSH::getKMerValuePlain(
-    const std::string& seq, size_t offset, size_t K) {
+    const std::string& seq, int64_t offset, int64_t K) {
   int64_t val = 0;
-  for (size_t i = offset; i < offset + K && i < seq.size(); ++i) {
+  for (int64_t i = offset; i < offset + K && i < (int64_t)seq.size(); ++i) {
     val *= ALPHABET_SIZE;
     val += (int64_t)seq[i] - 'A' + 1; 
   }
@@ -104,18 +104,18 @@ int64_t LSH::getKMerValuePlain(
 }
 
 int64_t LSH::getKMerValuePlainMOD(
-    const std::string& seq, size_t offset, size_t K, int64_t MOD) {
+    const std::string& seq, int64_t offset, int64_t K, int64_t MOD) {
   return getKMerValuePlain(seq, offset, K) % MOD;
 }
 
 int64_t LSH::getKMerValueMD5(
-    const std::string& seq, size_t offset, size_t K) {
+    const std::string& seq, int64_t offset, int64_t K) {
   return md5ToInt(md5(seq.substr(offset, K)).c_str());
 }
 
 int64_t LSH::md5ToInt(const char* fingerprint) {
-  size_t len = strlen(fingerprint);
-  size_t offset = len < 16 ? 0 : len-16;
+  int64_t len = strlen(fingerprint);
+  int64_t offset = len < 16 ? 0 : len-16;
   unsigned long long hash_tail = strtoull(fingerprint + offset, NULL, 16);
   return hash_tail % INT64_MAX;
 }

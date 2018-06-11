@@ -32,11 +32,11 @@ class FastaParser {
  public:
   FastaParser() {}
 
-  std::vector<DataSample> parseFile(
+  std::vector<DataSamplePtr> parseFile(
     const char* filePath, 
     int64_t startSeek, 
     int64_t endSeek,
-    std::function<DataSample(const FastaHeader& fh)> parseCb
+    std::function<DataSamplePtr(const FastaHeader& fh)> parseCb
   );
 
   double getProcessingTimeSec() const; 
