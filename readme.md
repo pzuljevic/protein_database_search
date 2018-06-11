@@ -25,7 +25,7 @@ To clean up the build run:
 
 ### Run:
 
-    ./pdbs \<input_file_path\> \<num threads\> \<K\> \<W\> \<hash type\> \<MOD\>
+    ./pdbs \<input_file_path\> \<num threads\> \<K\> \<W\> \<hash type\> \<MOD\> \<numLengthClusters\> \<looseThreshold\> \<tightThreshold\> 
 
 
 #### Parameter description:
@@ -43,6 +43,12 @@ To clean up the build run:
 >               2 (same as previous, but with MOD applied)
 >
 >   MOD - used only for option 2 for hash type
+> 
+>   numLengthClusters - number of length buckets (when doing phase 1 - clustering by length)
+>
+>   looseThreshold - threshold to create loose clusters
+> 
+>   tightThreshold - threshold to create tight clusters
 
 #### Expected input file description:
 
