@@ -2,7 +2,11 @@
 
 #include <set>
 #include <cstdint>
+#include <cstdlib>
 #include "md5.h"
+
+#define PRIME 17077
+#define MAX 15619
 
 using namespace fer::zesoi::bioinfo;
 
@@ -47,6 +51,35 @@ LSH::getHashFunc(
   } 
 }
 
+std::vector<int64_t> LSH::getCoeff(int64_t K) {
+  std::vector<int64_t> res;
+  for (int i = 0; i < K; ++i) {
+    res.push_back(rand() % MAX);
+  }
+  return res;
+}
+
+
+std::vector<int64_t> LSH::getKMinHash(
+    const std::string& seq, 
+    int64_t K, 
+    const std::vector<int64_t>& a,
+    const std::vector<int64_t>& b) { 
+
+  std::set<int64_t> features;
+  auto hashEval = getHashFunc(HashType::PLAIN, 0);
+  for (int j = 0; j <  a.size(); ++j) {
+    int64_t minValue = INT64_MAX;
+    for (int64_t i = 0; i <= (int64_t)seq.size() - K; i++) {
+      const auto val = hashEval(seq, i, K);
+      int64_t minHash = (a[j]*val + b[j]) % PRIME; 
+      if (minHash < minValue) minValue = minHash;
+    }
+    features.insert(minValue);
+  } 
+  return std::vector<int64_t>(features.begin(), features.end());;
+}
+
 std::vector<int64_t> LSH::getMinHash(
     const std::string& seq, 
     int64_t K, 
@@ -67,7 +100,34 @@ std::vector<int64_t> LSH::getMinHash(
     }
     features.insert(minValue);
   } 
-  return std::vector<int64_t>(features.begin(), features.end());
+
+  return std::vector<int64_t>(features.begin(), features.end());;
+}
+
+std::vector<int64_t> LSH::getMinHashW(
+    const std::string& seq, 
+    int64_t K, 
+    int64_t W,
+    HashType hashType, 
+    int64_t MOD) { 
+  std::set<int64_t> features;
+  auto hashEval = getHashFunc(hashType, MOD);
+  for (int64_t i = 0; i < (int64_t)seq.size(); i += W) {
+    int64_t minIndex = i;
+    int64_t minValue = INT64_MAX;
+    for (int64_t j = 0; j < W && (i + j) < (int64_t)seq.size(); ++j) {
+      const auto val = hashEval(seq, i+j, K);
+      if (val < minValue) {
+        minIndex = i + j;
+        minValue = val;
+      }
+    }
+    features.insert(minValue);
+  } 
+
+  auto result = std::vector<int64_t>(features.begin(), features.end());
+  result.resize(W);
+  return result;
 }
 
 std::vector<int64_t> LSH::getMaxHash(
@@ -90,7 +150,7 @@ std::vector<int64_t> LSH::getMaxHash(
     }
     features.insert(maxValue);
   } 
-  return std::vector<int64_t>(features.begin(), features.end());
+  return std::vector<int64_t>(features.begin(), features.end());;
 }
 
 int64_t LSH::getKMerValuePlain(

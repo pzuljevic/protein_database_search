@@ -10,6 +10,9 @@
 
 using namespace fer::zesoi::bioinfo;
 
+static double sum = 0;
+static int n = 0;
+
 double JaccardDistance::getSimilarity(
     const std::vector<int64_t>& seq1, 
     const std::vector<int64_t>& seq2) const {
@@ -30,6 +33,11 @@ double JaccardDistance::getSimilarity(
   if (unionCnt == 0) {
     return 0;
   }
+  sum += (double) intersectionCnt / unionCnt;
+  n++;
+  if (n == 1000) std::cout << sum / n << std::endl;
+  if (n == 10000) std::cout << "D " << sum / n << std::endl;
+
   return (double) intersectionCnt / unionCnt;
 }
 

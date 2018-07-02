@@ -31,7 +31,24 @@ class LSH {
     HashType hashType = HashType::MD5, 
     int64_t MOD = 0);
 
+  static std::vector<int64_t> getCoeff(int64_t K);
+
+  static std::vector<int64_t> getKMinHash(
+    const std::string& seq, 
+    int64_t K, 
+    const std::vector<int64_t>& a,
+    const std::vector<int64_t>& b
+  );
+
   static std::vector<int64_t> getMinHash(
+    const std::string& seq, 
+    int64_t K, 
+    int64_t W,
+    HashType hashType = HashType::MD5, 
+    int64_t MOD = 0
+  );
+
+  static std::vector<int64_t> getMinHashW(
     const std::string& seq, 
     int64_t K, 
     int64_t W,

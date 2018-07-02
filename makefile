@@ -5,7 +5,6 @@ NAME = pdbs
 
 OBJ_DIR = obj
 SRC_DIR = src
-DOC_DIR = doc
 EXC_DIR = bin
 
 I_CMD = $(addprefix -I, $(SRC_DIR) ) 
@@ -18,7 +17,6 @@ OBJ = $(subst $(SRC_DIR), $(OBJ_DIR), $(addsuffix .o, $(basename $(SRC))))
 DEP = $(OBJ:.o=.d)
 EXC = $(NAME)
 BIN = $(EXC_DIR)/$(EXC)
-DOC = $(DOC_DIR)/PdbsFile
 
 print-%  : ; @echo $* = $($*)
 
@@ -44,11 +42,11 @@ $(BIN): $(EXC)
 	@cp $< $@
 
 clean:
-	@echo [RM] cleaning
-	@rm $(OBJ_DIR) $(EXC) -rf
+	@echo [RM] cleaning 
+	@rm -rf $(OBJ_DIR) $(EXC_DIR) $(EXC) 
 
 remove:
 	@echo [RM] removing
-	@rm $(BIN) $(EXC) -rf
+	@rm -rf $(BIN) $(EXC_DIR) $(EXC) 
 
 -include $(DEP)

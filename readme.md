@@ -53,6 +53,17 @@ To clean up the build run:
 >   looseThreshold - threshold to create loose clusters
 > 
 >   tightThreshold - threshold to create tight clusters
+>
+>   outputFile - name of the output file (used as an input for plot script)
+
+### Example - generate test data and plot it
+> 
+> python scripts/gen_data.py > test_data
+>
+> /pdbs test_data 1 3 10 1 0 1 0.20 0.90 log.out 
+>
+> python scripts/plot.py
+>
 
 #### Expected input file description:
 
@@ -69,7 +80,7 @@ Input file must be in the FASTA form and follow the next format:
 ### Example1 (2 threads):
 
 ```
->  $ ./pdbs ../src/db/uniprot_sprot.fasta2 2 3 10 0 0 200 0.4 0.9
+>  $ ./pdbs ../src/db/uniprot_sprot.fasta2 2 3 10 0 0 200 0.4 0.9 log.out
 >  Reading input file: ../src/db/uniprot_sprot.fasta2, size 0.0247606 GB
 >  Using 2 io threads
 >  Enqueuing reading file: worker=1/2
@@ -86,7 +97,7 @@ Input file must be in the FASTA form and follow the next format:
 ### Example2 (10 threads):
 
 ```
->  ./pdbs ../src/db/uniprot_sprot.fasta2 10 3 10 0 0 200 0.4 0.9
+>  ./pdbs ../src/db/uniprot_sprot.fasta2 10 3 10 0 0 200 0.4 0.9 log.out
 >  Reading input file: ../src/db/uniprot_sprot.fasta2, size 0.0247606 GB
 >  Using 10 io threads
 >  Enqueuing reading file: worker=1/10

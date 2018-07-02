@@ -19,7 +19,7 @@ def gen_similar_seq(seq, p):
     similar_seq[randint(0, len(seq) - 1)] = allchar[randint(0, 19)]
   return ''.join(similar_seq)
 
-K = 1 
+K = 5 
 seeds = [gen_protein_seq() for i in range(0, K)]
 diff_pct = [0.01, 0.10, 0.25] 
 

@@ -31,6 +31,10 @@ class DataSample {
     return id_;
   }
 
+  std::string getHeader() const {
+    return header_;
+  }
+
   int64_t getLength() const {
     return length_;
   }
@@ -59,6 +63,22 @@ class DataSample {
     std::lock_guard<std::mutex> guard(lck_); 
     tightClusters_.insert(id);
   }
+
+  std::unordered_set<int64_t> getLooseClusters() {
+    return looseClusters_;
+  } 
+
+  std::unordered_set<int64_t> getTightClusters() {
+    return tightClusters_;
+  } 
+  
+  void setOffset(int64_t offset) {
+    offset_ = offset;
+  }
+ 
+  int64_t getOffset() const {
+    return offset_;
+  } 
 
   void print() const {
     std::cout << "ID: " << id_ << " " 
@@ -94,6 +114,7 @@ class DataSample {
   std::unordered_set<int64_t> tightClusters_; 
   std::unordered_set<int64_t> looseClusters_; 
   std::mutex lck_; 
+  int64_t offset_{0};
 };
 
 typedef std::shared_ptr<DataSample> DataSamplePtr;
