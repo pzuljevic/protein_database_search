@@ -1,4 +1,4 @@
-# Protein database search tool (PDBS) - work still in progress
+# Protein database search tool (PDBS) 
 
 ## INSTALATION
 
