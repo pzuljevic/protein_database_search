@@ -29,7 +29,22 @@ To clean up the build run:
 
 ### Run:
 
-    ./pdbs \<input_file_path\> \<num threads\> \<K\> \<W\> \<hash type\> \<MOD\> \<numLengthClusters\> \<looseThreshold\> \<tightThreshold\> 
+    ./pdbs <input_file_path> <num threads> <K> <W> <hash type> <MOD> <numLengthClusters> <looseThreshold> <tightThreshold>  <outputFile>
+
+
+
+### Example - generate test data and plot it
+>
+> make install
+> 
+> python scripts/gen_data.py > test_data
+>
+> ./pdbs test_data 1 3 10 1 0 1 0.20 0.90 log.out 
+>
+> python scripts/plot.py
+>
+> make clean
+>
 
 
 #### Parameter description:
@@ -56,14 +71,6 @@ To clean up the build run:
 >
 >   outputFile - name of the output file (used as an input for plot script)
 
-### Example - generate test data and plot it
-> 
-> python scripts/gen_data.py > test_data
->
-> /pdbs test_data 1 3 10 1 0 1 0.20 0.90 log.out 
->
-> python scripts/plot.py
->
 
 #### Expected input file description:
 
