@@ -20,7 +20,7 @@ class LengthClustering {
       std::vector<DataSamplePtr>& samples, 
       int64_t numBuckets) {
     std::unordered_map<int64_t, std::vector<int64_t>> lengthClusters;
-    for (int64_t i = 0; i < samples.size(); ++i) {
+    for (int64_t i = 0; i < (int64_t)samples.size(); ++i) {
       const auto looseID = (samples[i]->getLength() / 50) % numBuckets;
       lengthClusters[looseID].push_back(i);
     } 

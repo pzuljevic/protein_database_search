@@ -68,7 +68,7 @@ std::vector<int64_t> LSH::getKMinHash(
 
   std::set<int64_t> features;
   auto hashEval = getHashFunc(HashType::PLAIN, 0);
-  for (int j = 0; j <  a.size(); ++j) {
+  for (int j = 0; j <  (int)a.size(); ++j) {
     int64_t minValue = INT64_MAX;
     for (int64_t i = 0; i <= (int64_t)seq.size() - K; i++) {
       const auto val = hashEval(seq, i, K);
@@ -89,12 +89,10 @@ std::vector<int64_t> LSH::getMinHash(
   std::set<int64_t> features;
   auto hashEval = getHashFunc(hashType, MOD);
   for (int64_t i = 0; i < (int64_t)seq.size(); i += W) {
-    int64_t minIndex = i;
     int64_t minValue = INT64_MAX;
     for (int64_t j = 0; j < W && (i + j) < (int64_t)seq.size(); ++j) {
       const auto val = hashEval(seq, i+j, K);
       if (val < minValue) {
-        minIndex = i + j;
         minValue = val;
       }
     }
@@ -113,12 +111,10 @@ std::vector<int64_t> LSH::getMinHashW(
   std::set<int64_t> features;
   auto hashEval = getHashFunc(hashType, MOD);
   for (int64_t i = 0; i < (int64_t)seq.size(); i += W) {
-    int64_t minIndex = i;
     int64_t minValue = INT64_MAX;
     for (int64_t j = 0; j < W && (i + j) < (int64_t)seq.size(); ++j) {
       const auto val = hashEval(seq, i+j, K);
       if (val < minValue) {
-        minIndex = i + j;
         minValue = val;
       }
     }
@@ -139,12 +135,10 @@ std::vector<int64_t> LSH::getMaxHash(
   std::set<int64_t> features;
   auto hashEval = getHashFunc(hashType, MOD);
   for (int64_t i = 0; i < (int64_t)seq.size(); i += W) {
-    int64_t maxIndex = i;
     int64_t maxValue = INT64_MIN;
     for (int64_t j = 0; j < W && (i + j) < (int64_t)seq.size(); ++j) {
       const auto val = hashEval(seq, i+j, K);
       if (val > maxValue) {
-        maxIndex = i + j;
         maxValue = val;
       }
     }
