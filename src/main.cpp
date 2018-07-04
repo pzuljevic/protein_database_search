@@ -250,12 +250,12 @@ int main(int argc, char** argv) {
       }
       std::ofstream queryOutputFile;
       queryOutputFile.open(sample->getHeader().substr(0, 15) + ".poa");
-      queryOutputFile << sample->getHeader() << std::endl;
+      queryOutputFile << ">" << sample->getHeader() << std::endl;
       queryOutputFile << sample->getData() << std::endl;
       int cntTC = 0;
       for (auto& tightID : looseClustersGlobal[bestLooseId]) {
         if (cntTC > numTC) break;
-        queryOutputFile << samples[tightClustersGlobal[tightID][0]]->getHeader() << std::endl;
+        queryOutputFile << ">" << samples[tightClustersGlobal[tightID][0]]->getHeader() << std::endl;
         queryOutputFile << samples[tightClustersGlobal[tightID][0]]->getData() << std::endl;
       }
       queryOutputFile.close();
