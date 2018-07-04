@@ -254,7 +254,7 @@ int main(int argc, char** argv) {
       queryOutputFile << sample->getData() << std::endl;
       int cntTC = 0;
       for (auto& tightID : looseClustersGlobal[bestLooseId]) {
-        if (cntTC > numTC) break;
+        if (cntTC++ > numTC) break;
         queryOutputFile << ">" << samples[tightClustersGlobal[tightID][0]]->getHeader() << std::endl;
         queryOutputFile << samples[tightClustersGlobal[tightID][0]]->getData() << std::endl;
       }
