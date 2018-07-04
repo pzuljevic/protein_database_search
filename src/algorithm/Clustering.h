@@ -66,12 +66,12 @@ class JaccardClustering {
     int previousSizeTightCluster = 0;
 
     for (const auto i : sampleIDs) {
-      auto start = std::chrono::high_resolution_clock::now();
-      if (++k % 1000 == 0) 
-        std::cout << sampleIDs.size() << " status: " 
+      if (++k % 10000 == 0) { 
+        std::cout << sampleIDs.size() << " processing status: " 
                   <<  (double) k / sampleIDs.size() 
-                  << " " << looseClusters.size() 
-                  << " tight: " << tightClusters.size() << std::endl;
+                  << " loose cluster count" << looseClusters.size() 
+                  << " tight cluster count: " << tightClusters.size() << std::endl; 
+      }
       if (looseClusters.size() - previousSizeLooseCluster > sqrt(++lcThresholdUpdateCnt) 
           && lcThresholdUpdateCnt > 1000) {
         std::cout << "Relaxing threshold " << sampleIDs.size()
@@ -84,9 +84,10 @@ class JaccardClustering {
       std::vector<int64_t> looseIDs;
       auto bestLooseID = 0; 
       auto maxLooseSim = 0;
-      int br = 0;
+      int cntLC = 0;
       for (auto& it : looseClusters) {
-        if (br++ > 10) break;
+        // Don't analyze more than sqrt(n) samples
+        if (cntLC++ > sqrt(sampleIDs.size())) break;
         const auto looseID = it.first; 
         const auto tightID = it.second[0];
         const auto d = distanceMetric->getSimilarity(
@@ -99,7 +100,6 @@ class JaccardClustering {
           looseIDs.push_back(bestLooseID);
         }
       }       
-      auto t1 = std::chrono::high_resolution_clock::now();
 
       auto bestTightID = -1; 
       auto maxTightSim = 0;
@@ -118,12 +118,12 @@ class JaccardClustering {
       }
 
       // Find the best tight and loose cluster
-      int cnt2 = 0;
+      cntLC = 0;
       for (auto& looseID : looseIDs) {
-        cnt2++;
-        int cnt = 0;
+        cntLC++;
+        int cntTC = 0;
         for (auto& tightID : looseClusters[looseID]) {
-          cnt++;
+          cntTC++;
           const auto d = distanceMetric->getSimilarity(
             samples_[tightClusters[tightID][0]]->getFeatures(), 
             samples_[i]->getFeatures()
@@ -132,11 +132,10 @@ class JaccardClustering {
             maxTightSim = d;
             bestTightID = tightID;
           }
-          if (cnt > 10) break;
+          if (cntTC > sqrt(sampleIDs.size())) break;
         }
-        if (cnt2 > 10) break;
+        if (cntLC > sqrt(sampleIDs.size())) break;
       }
-      auto t2 = std::chrono::high_resolution_clock::now();
 
       // Tight cluster is not found
       if (bestTightID == -1 || maxTightSim < tightThreshold_) {
@@ -160,22 +159,7 @@ class JaccardClustering {
                   << " " << tightThreshold_ << " -> " 
                   << tightThreshold_ * 0.9 << std::endl;
       }
-
-      auto finish = std::chrono::high_resolution_clock::now();
-      std::chrono::duration<double> elapsed = finish - start;
-      std::chrono::duration<double> t1e = t1 - start;
-      std::chrono::duration<double> t2e = t2 - t1;
-
-      if (k % 1000 == 0 && elapsed.count() > 0.1)  
-        std::cout << "Size: " << sampleIDs.size() 
-                  << " t:" << elapsed.count() 
-                  << " time, t1=" << t1e.count() 
-                  << ", t2=" << t2e.count() 
-                  << " loose: " << looseClusters.size() 
-                  << " tight: " << tightClusters.size() 
-                  << " total: " << sampleIDs.size() << std::endl;
     } 
-    std::cout << sampleIDs.size() << " done " << std::endl;
   }
 
  protected:

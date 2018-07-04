@@ -24,8 +24,9 @@ class DataSample {
   DataSample(
     const std::string& header, 
     const std::vector<int64_t>& features,
+    const std::string& data,
     int64_t length) 
-    : id_((int64_t)this), header_(header), features_(features), length_(length) {} 
+    : id_((int64_t)this), header_(header), features_(features), data_(data), length_(length) {} 
  
   int64_t getID() const {
     return id_;
@@ -37,6 +38,10 @@ class DataSample {
 
   int64_t getLength() const {
     return length_;
+  }
+  
+  std::string getData() const {
+    return data_;
   }
   
   const std::vector<int64_t>& getFeatures() const {
@@ -109,6 +114,7 @@ class DataSample {
   int64_t id_;
   std::string header_;
   std::vector<int64_t> features_; 
+  std::string data_;
   int64_t length_;
   LengthClusterTag lct_;
   std::unordered_set<int64_t> tightClusters_; 

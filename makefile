@@ -9,8 +9,8 @@ EXC_DIR = bin
 
 I_CMD = $(addprefix -I, $(SRC_DIR) ) 
 
-CP_FLAGS = $(I_CMD) -O3 -Wall -std=c++11 -march=native
-LD_FLAGS = $(I_CMD) -pthread
+CP_FLAGS = $(I_CMD) -O3 -Wall -std=c++11 -march=native 
+LD_FLAGS = $(I_CMD) -pthread 
 
 SRC = $(shell find $(SRC_DIR) -type f -regex ".*\.cpp")
 OBJ = $(subst $(SRC_DIR), $(OBJ_DIR), $(addsuffix .o, $(basename $(SRC)))) 
