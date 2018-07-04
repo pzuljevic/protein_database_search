@@ -6,7 +6,7 @@ Referencing https://raw.githubusercontent.com/rvaser/spoa/master/README.md
 
 > python scripts/gen_data.py > data.in  
 >
-> make && ./pdbs data.in 1 3 10 1 0 50 0.50 0.90 log2.out query.in
+> make && ./pdbs data.in 1 3 10 1 0 50 0.50 0.90 log.out query.in
 >
 > cd poa_util
 >
