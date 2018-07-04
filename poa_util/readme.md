@@ -2,10 +2,6 @@
 
 Referencing https://raw.githubusercontent.com/rvaser/spoa/master/README.md
 
-g++ poa.cpp -std=c++11 -Iinclude/ -Lbuild/lib/ -lspoa -o poa 
-
-./poa 0 5 -4 -8 <inputFile>
-
 ## Exact steps
 
 > python scripts/gen_data.py > data.in  
