@@ -71,7 +71,7 @@ To clean up the build run:
 >
 >   outputFile - name of the output file (used as an input for plot script)
 >
->   queryInFile - file which will be used for online queries, as a result
+>   queryInFile - Optional arg, represents the file which will be used for online queries, as a result
 >                 pdbs will generate 1 file for each sequence query with up to the
 >                 10 tight cluster represents from the best loose cluster,
 >                 this may be used for the further poa analysis

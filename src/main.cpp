@@ -27,7 +27,7 @@
 using namespace fer::zesoi::bioinfo;
 
 int main(int argc, char** argv) {
-  if (argc != 12) {
+  if (argc < 11) {
     std::cout << "Run: ./binary "
               << "<inFile> <numThreads> <K> <W> <hashType> <modulo> "
               << "<numLengthClusters> <looseThreshold> <tightThreshold> " 
@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
   const auto looseThreshold = atof(argv[8]);
   const auto tightThreshold = atof(argv[9]);
   const auto outFile = argv[10];
-  const auto queryInFile = argv[11];
+  const auto queryInFile = argc == 12? argv[11] : "";
 
   // Thread pool
   auto threadPool = std::make_shared<ThreadPool>(numThreads);
@@ -206,59 +206,60 @@ int main(int argc, char** argv) {
             << ", total number of tight clusters: " << tc.size() 
             << ", total number of samples: " << samples.size()
             << std::endl;
+  if (argc == 12) {
+    std::cout << "Reading query input file: " << queryInFile << std::endl;
+    auto poaThreadPool = std::make_shared<ThreadPool>(1);
+    auto poaFileReader = make_unique<MultithreadedFastaReader<DataSamplePtr>>(
+      queryInFile, 
+      poaThreadPool,
+      1,
+      parseCb
+    );
+    auto poaFutureResults = poaFileReader->read();
+    // Collect data from the threads 
+    std::vector<DataSamplePtr> poaSamples; 
+    for (auto& future : *poaFutureResults) {
+      poaThreadPool->enqueue([&future, &poaSamples, &lck] {
+        const auto& result = future.get();
+        std::lock_guard<std::mutex> guard(lck); 
+        poaSamples.insert(poaSamples.end(), result.begin(), result.end()); 
+      });
+    } 
 
-  std::cout << "Reading query input file: " << queryInFile << std::endl;
-  auto poaThreadPool = std::make_shared<ThreadPool>(1);
-  auto poaFileReader = make_unique<MultithreadedFastaReader<DataSamplePtr>>(
-    queryInFile, 
-    poaThreadPool,
-    1,
-    parseCb
-  );
-  auto poaFutureResults = poaFileReader->read();
-  // Collect data from the threads 
-  std::vector<DataSamplePtr> poaSamples; 
-  for (auto& future : *poaFutureResults) {
-    poaThreadPool->enqueue([&future, &poaSamples, &lck] {
-      const auto& result = future.get();
-      std::lock_guard<std::mutex> guard(lck); 
-      poaSamples.insert(poaSamples.end(), result.begin(), result.end()); 
-    });
-  } 
+    poaThreadPool->stop();
 
-  poaThreadPool->stop();
-
-  // For online phase read each sample from the input file and run POA against
-  // it on loose clusters with other script.
-  // This will generate log files for each sample for query input file.
-  const int64_t numTC = 20; 
-  int64_t bestLooseId = 0; 
-  for (const auto& sample : poaSamples) {
-    double maxSim = 0.0;
-    for (auto& it : looseClustersGlobal) {
-      const auto looseID = it.first; 
-      for (auto& tightID : looseClustersGlobal[looseID]) {
-        const auto d = distanceMetric->getSimilarity(
-          samples[tightClustersGlobal[tightID][0]]->getFeatures(), 
-          sample->getFeatures()
-        );
-        if (d > maxSim) {
-          maxSim = d;
-          bestLooseId = looseID;
+    // For online phase read each sample from the input file and run POA against
+    // it on loose clusters with other script.
+    // This will generate log files for each sample for query input file.
+    const int64_t numTC = 20; 
+    int64_t bestLooseId = 0; 
+    for (const auto& sample : poaSamples) {
+      double maxSim = 0.0;
+      for (auto& it : looseClustersGlobal) {
+        const auto looseID = it.first; 
+        for (auto& tightID : looseClustersGlobal[looseID]) {
+          const auto d = distanceMetric->getSimilarity(
+            samples[tightClustersGlobal[tightID][0]]->getFeatures(), 
+            sample->getFeatures()
+          );
+          if (d > maxSim) {
+            maxSim = d;
+            bestLooseId = looseID;
+          }
         }
       }
+      std::ofstream queryOutputFile;
+      queryOutputFile.open(sample->getHeader().substr(0, 15) + ".poa");
+      queryOutputFile << sample->getHeader() << std::endl;
+      queryOutputFile << sample->getData() << std::endl;
+      int cntTC = 0;
+      for (auto& tightID : looseClustersGlobal[bestLooseId]) {
+        if (cntTC > numTC) break;
+        queryOutputFile << samples[tightClustersGlobal[tightID][0]]->getHeader() << std::endl;
+        queryOutputFile << samples[tightClustersGlobal[tightID][0]]->getData() << std::endl;
+      }
+      queryOutputFile.close();
     }
-    std::ofstream queryOutputFile;
-    queryOutputFile.open(sample->getHeader().substr(0, 15) + ".poa");
-    queryOutputFile << sample->getHeader() << std::endl;
-    queryOutputFile << sample->getData() << std::endl;
-    int cntTC = 0;
-    for (auto& tightID : looseClustersGlobal[bestLooseId]) {
-      if (cntTC > numTC) break;
-      queryOutputFile << samples[tightClustersGlobal[tightID][0]]->getHeader() << std::endl;
-      queryOutputFile << samples[tightClustersGlobal[tightID][0]]->getData() << std::endl;
-    }
-    queryOutputFile.close();
   }
   return 0;
 }
