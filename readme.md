@@ -29,7 +29,7 @@ To clean up the build run:
 
 ### Run:
 
-    ./pdbs <input_file_path> <num threads> <K> <W> <hash type> <MOD> <numLengthClusters> <looseThreshold> <tightThreshold>  <outputFile>
+    ./pdbs <input_file_path> <num threads> <K> <W> <hash type> <MOD> <numLengthClusters> <looseThreshold> <tightThreshold>  <outputFile> <queryInFile>
 
 
 
@@ -39,7 +39,7 @@ To clean up the build run:
 > 
 > python scripts/gen_data.py > test_data
 >
-> ./pdbs test_data 1 3 10 1 0 1 0.20 0.90 log.out 
+> ./pdbs test_data 1 3 10 1 0 1 0.20 0.90 log.out query.in
 >
 > python scripts/plot.py
 >
@@ -70,6 +70,11 @@ To clean up the build run:
 >   tightThreshold - threshold to create tight clusters
 >
 >   outputFile - name of the output file (used as an input for plot script)
+>
+>   queryInFile - file which will be used for online queries, as a result
+>                 pdbs will generate 1 file for each sequence query with up to the
+>                 10 tight cluster represents from the best loose cluster,
+>                 this may be used for the further poa analysis
 
 
 #### Expected input file description:
