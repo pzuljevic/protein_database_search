@@ -62,8 +62,6 @@ class JaccardClustering {
     int k = 0;
     int lcThresholdUpdateCnt = 0;
     int previousSizeLooseCluster = 0;
-    int tcThresholdUpdateCnt = 0;
-    int previousSizeTightCluster = 0;
 
     for (const auto i : sampleIDs) {
       if (++k % 10000 == 0) { 
@@ -73,11 +71,11 @@ class JaccardClustering {
                   << " tight cluster count: " << tightClusters.size() << std::endl; 
       }
       if (looseClusters.size() - previousSizeLooseCluster > sqrt(++lcThresholdUpdateCnt) 
-          && lcThresholdUpdateCnt > 1000) {
+          && lcThresholdUpdateCnt > sqrt(samples_.size())) {
         std::cout << "Relaxing threshold " << sampleIDs.size()
                   << " " << looseThreshold_ << " -> " 
                   << looseThreshold_ * 0.9 << std::endl;
-        looseThreshold_ *= 0.9; 
+        looseThreshold_ *= 0.8; 
         previousSizeLooseCluster = looseClusters.size();
         lcThresholdUpdateCnt = 0;
       } 
@@ -86,8 +84,6 @@ class JaccardClustering {
       auto maxLooseSim = 0;
       int cntLC = 0;
       for (auto& it : looseClusters) {
-        // Don't analyze more than sqrt(n) samples
-        if (cntLC++ > sqrt(sampleIDs.size())) break;
         const auto looseID = it.first; 
         const auto tightID = it.second[0];
         const auto d = distanceMetric->getSimilarity(
@@ -102,7 +98,7 @@ class JaccardClustering {
       }       
 
       auto bestTightID = -1; 
-      auto maxTightSim = 0;
+      double maxTightSim = 0;
       if (looseIDs.size() == 0) {
         // Create loose cluster
         const auto looseID = looseClusters.size();
@@ -118,6 +114,7 @@ class JaccardClustering {
       }
 
       // Find the best tight and loose cluster
+
       cntLC = 0;
       for (auto& looseID : looseIDs) {
         cntLC++;
@@ -132,9 +129,7 @@ class JaccardClustering {
             maxTightSim = d;
             bestTightID = tightID;
           }
-          if (cntTC > sqrt(sampleIDs.size())) break;
         }
-        if (cntLC > sqrt(sampleIDs.size())) break;
       }
 
       // Tight cluster is not found
@@ -149,16 +144,6 @@ class JaccardClustering {
       samples_[i]->addLooseCluster(bestLooseID);
       samples_[i]->addTightCluster(bestTightID);
       samples_[i]->setOffset(offset);
-
-      if (looseClusters[bestLooseID].size() - previousSizeTightCluster > sqrt(tcThresholdUpdateCnt) 
-          && tcThresholdUpdateCnt > 100) {
-        tightThreshold_ *= 0.9;
-        tcThresholdUpdateCnt = 0;
-        previousSizeTightCluster = looseClusters[bestLooseID].size();
-        std::cout << "Relaxing threshold " << sampleIDs.size()
-                  << " " << tightThreshold_ << " -> " 
-                  << tightThreshold_ * 0.9 << std::endl;
-      }
     } 
   }
 

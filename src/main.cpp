@@ -122,6 +122,8 @@ int main(int argc, char** argv) {
   std::unordered_map<int64_t, std::vector<int64_t>> looseClustersGlobal; 
 
   std::map<std::string, std::vector<int64_t>> representClustersMap;
+  int64_t totalTC = 0;
+  int64_t totalLC = 0;
   for (const auto& it : lengthClusters) {
     threadPool->enqueue([
         &it, 
@@ -131,6 +133,8 @@ int main(int argc, char** argv) {
         &lck, 
         offset, 
         &samples,
+        &totalLC,
+        &totalTC,
         &representClustersMap] {      
       {
         std::lock_guard<std::mutex> guard(lck); 
@@ -150,6 +154,8 @@ int main(int argc, char** argv) {
 
       {
         std::lock_guard<std::mutex> guard(lck); 
+        totalTC += tightClusters.size();
+        totalLC += looseClusters.size();
         for (const auto it : looseClusters) {
           int64_t id = tightClusters[it.second[0]][0];
           const auto& tag = samples[id]->getHeader().substr(0, READ_HEADER_SIZE);
@@ -168,20 +174,13 @@ int main(int argc, char** argv) {
     offset += OFFSET_LC;
   }
   threadPool->stop();
-  std::set<int64_t> tc; 
-  std::set<int64_t> lc; 
-  std::map<int64_t, std::set<std::string>> clusters;
+  std::cout << "Clustering done..." << std::endl;
 
-  for (auto sample : samples) {
-    for (auto c : sample->getTightClusters()) { 
-    tc.insert(c + sample->getOffset());
-    }
-    for (auto c : sample->getLooseClusters()) { 
-      lc.insert(c + sample->getOffset());
-      clusters[c + sample->getOffset()].insert(
-        sample->getHeader().substr(0, READ_HEADER_SIZE)); 
-    }
-  }
+  std::cout << "Total number of loose clusters: " << totalLC
+            << ", total number of tight clusters: " << totalTC 
+            << ", total number of samples: " << samples.size()
+            << std::endl;
+
 
   std::ofstream outputFile;
   outputFile.open(outFile);
@@ -202,10 +201,6 @@ int main(int argc, char** argv) {
     outputFile << std::endl;
   } 
   outputFile.close();
-  std::cout << "Total number of loose clusters: " << lc.size() 
-            << ", total number of tight clusters: " << tc.size() 
-            << ", total number of samples: " << samples.size()
-            << std::endl;
   if (argc == 12) {
     std::cout << "Reading query input file: " << queryInFile << std::endl;
     auto poaThreadPool = std::make_shared<ThreadPool>(1);
